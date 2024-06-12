@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="1.css">
+</head>
+<body id="5">
+    <div style="display: inline-flex ; height: 5vh; width: 100%;"> <button id="d" type=""> dark or lith</button></div>
+    <div class="container" id="5">
+        <div class="products">
+            <div class="product">
+                <img src="iphone.jpg" alt="iPhone 13 Pro">
+                <div class="product-info">
+                    <h3>iPhone 13 Pro</h3>
+                    <p>900jd</p>
+                    <button class="add-to-cart">Add to cart</button>
+                </div>
+            </div>
+            <div class="product">
+                <img src="headset.jpg" alt="Headset">
+                <div class="product-info">
+                    <h3>Headset</h3>
+                    <p>150jd</p>
+                    <button class="add-to-cart">Add to cart</button>
+                </div>
+            </div>
+            <div class="product">
+                <img src="keyboard.jpg" alt="Keyboard">
+                <div class="product-info">
+                    <h3>Keyboard</h3>
+                    <p>60jd</p>
+                    <button class="add-to-cart">Add to cart</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cart">
+          
+            </div>
+            
+        </div>
+        <div class="total-section">
+            <h2>Total</h2>
+            <p>00jd</p>
+            <button class="save">Save</button>
+        </div>
+    </div>
+    <script>
+   document.addEventListener('DOMContentLoaded', () => {
+    const products = document.querySelectorAll('.product');
+    const cart = document.querySelector('.cart');
+    const totalSection = document.querySelector('.total-section p');
+    const saveBtn = document.querySelector('.save');
+    let cartItems = {};
+    let btn = document.getElementById('d');
+    let body = document.getElementById('5');
+    
+    products.forEach(product => {
+        product.querySelector('.add-to-cart').addEventListener('click', () => {
+            const productName = product.querySelector('h3').innerText;
+            const productPrice = parseFloat(product.querySelector('p').innerText.replace('jd', ''));
+    
+            if (cartItems[productName]) {
+                cartItems[productName].quantity += 1;
+                cartItems[productName].totalPrice += productPrice;
+            } else {
+                cartItems[productName] = {
+                    price: productPrice,
+                    quantity: 1,
+                    totalPrice: productPrice
+                };
+            }
+            updateCart();
+        });
+    });
+
+    function updateCart() {
+        cart.innerHTML = '';
+        let total = 0;
+    
+        for (const item in cartItems) {
+            const cartItem = document.createElement('div');
+            cartItem.classList.add('cart-item');
+            cartItem.innerHTML = `
+                <img src="${item.toLowerCase().replace(' ', '')}.jpg" alt="${item}">
+                <div class="cart-item-info">
+                    <h3>${item}</h3>
+                    <div class="quantity">
+                        <button class="decrease">-</button>
+                        <span>${cartItems[item].quantity}</span>
+                        <button class="increase">+</button>
+                    </div>
+                    <p>${cartItems[item].totalPrice}jd</p>
+                    <button class="remove-item">✖</button>
+                </div>
+            `;
+    
+            cartItem.querySelector('.decrease').addEventListener('click', () => {
+                if (cartItems[item].quantity > 1) {
+                    cartItems[item].quantity -= 1;
+                    cartItems[item].totalPrice -= cartItems[item].price;
+                } else {
+                    delete cartItems[item];
+                }
+                updateCart();
+            });
+    
+            cartItem.querySelector('.increase').addEventListener('click', () => {
+                cartItems[item].quantity += 1;
+                cartItems[item].totalPrice += cartItems[item].price;
+                updateCart();
+            });
+    
+            cartItem.querySelector('.remove-item').addEventListener('click', () => {
+                delete cartItems[item];
+                updateCart();
+            });
+    
+            cart.appendChild(cartItem);
+            total += cartItems[item].totalPrice;
+        }
+    
+        totalSection.innerText = `${total}jd`;
+    }
+
+    var bgColors = ['#000000', '#ffffff'];
+    var cardColors = ['#333333', '#ffffff'];  
+    var textColors = ['#ffffff', '#000000']; 
+
+    let i = 0;
+
+    btn.addEventListener('click', function changeColor() {
+        if (i < bgColors.length) {
+            body.style.backgroundColor = bgColors[i];
+
+            const cards = document.querySelectorAll('.product, .cart-item, .total-section');
+            cards.forEach(card => {
+                card.style.backgroundColor = cardColors[i];
+                card.style.color = textColors[i];
+            });
+
+            const totalSection = document.querySelector('.total-section');
+            totalSection.style.backgroundColor = cardColors[i];
+            totalSection.style.color = textColors[i];
+
+            i++;
+        } else {
+            i = 0;
+        }
+    });
+
+    // Save mode and total to local storage
+    saveBtn.addEventListener('click', () => {
+        const currentMode = body.style.backgroundColor === bgColors[0] ? 'dark' : 'light';
+        const totalAmount = totalSection.innerText;
+        localStorage.setItem('mode', currentMode);
+        localStorage.setItem('total', totalAmount);
+        alert('Mode and total have been saved.');
+    });
+
+    // Load mode and total from local storage
+    const savedMode = localStorage.getItem('mode');
+    const savedTotal = localStorage.getItem('total');
+
+    if (savedMode) {
+        if (savedMode === 'dark') {
+            i = 0;
+        } else {
+            i = 1;
+        }
+        body.style.backgroundColor = bgColors[i];
+
+        const cards = document.querySelectorAll('.product, .cart-item, .total-section');
+        cards.forEach(card => {
+            card.style.backgroundColor = cardColors[i];
+            card.style.color = textColors[i];
+        });
+
+        const totalSection = document.querySelector('.total-section');
+        totalSection.style.backgroundColor = cardColors[i];
+        totalSection.style.color = textColors[i];
+    }
+
+    if (savedTotal) {
+        totalSection.innerText = savedTotal;
+    }
+});
+
+
+    </script>
+</body>
+</html>

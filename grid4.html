@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  
+<head>
+<style>
+
+.item{  color: black; text-align: center; justify-content: center;padding: 25px;font-size:xx-large ; background-color: rgb(214, 214, 212);  border: 0px solid  #000000  ;margin: 5px;width: auto; height: 50px;min-width: 50px;box-shadow: 0px 4px 3px lightslategray; } 
+.grid{position: absolute; background-color:lightblue; justify-content: center;; display: grid; grid-template-columns:auto auto auto auto auto; grid-template-rows:auto auto auto auto auto;width:auto; height: auto;}
+
+</style>
+</head>
+<body style=" position: absolute; background-color: blanchedalmond;top: 20%; right:50%; ">
+    
+    <h1>Grid</h1> 
+<div class="grid" >
+  <div class="item" id="total" style=" background-color: rgb(222, 233, 237);grid-row-start: 1; grid-column-start: span;  grid-column-end: span 5;  ">=</div>
+  <div class="item" id="1" style=" grid-column-start: 1; grid-row-start: 2; text-align: center;">1</div>
+  <div class="item" id="2" style=" grid-column-start: 2; grid-row-start: 2;" >2</div>
+  <div class="item" id="3" style=" grid-column-start: 3; grid-row-start: 2;" >3</div>  
+  <div class="item" id="4" style=" grid-column-start: 1; grid-row-start: 3;" >4</div>
+  <div class="item" id="5" style=" grid-column-start: 2; grid-row-start: 3;" >5</div>
+  <div class="item" id="6" style=" grid-column-start: 3; grid-row-start: 3;" >6</div>  
+  <div class="item" id="7" style=" grid-column-start: 1; grid-row-start: 4;" >7</div>
+  <div class="item" id="8" style=" grid-column-start: 2; grid-row-start: 4;" >8</div>
+  <div class="item" id="9" style=" grid-column-start: 3; grid-row-start: 4;">9</div>
+  <div class="item" id="0" style=" grid-column-start: 2; grid-row-start:5;" >0</div>
+  <div class="item" id="+" style=" background-color:rgb(240, 240, 128); grid-column-start: 4; grid-row-start: 2;" >+</div>  
+  <div class="item" id="-" style=" background-color:rgb(240, 240, 128) ;grid-column-start: 4; grid-row-start: 3;" >-</div>
+  <div class="item" id="/" style=" background-color:rgb(240, 240, 128) ;grid-column-start: 4; grid-row-start: 5;" >/</div>
+  <div class="item" id="*" style="  background-color:rgb(240, 240, 128); grid-column-start: 4; grid-row-start: 4;" >*</div>  
+  <div class="item" id="c" style=" background-color: #e46e6e; grid-column-start:1; grid-row-start: 5;" >c</div>
+  <div class="item" id="=" style=" grid-column-start: 3; grid-row-start: 5;" >=</div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+            const totalElement = document.getElementById('total');
+            let currentInput = '';
+            let currentOperator = '';
+            let firstOperand = '';
+
+            document.querySelectorAll('.item').forEach(button => {
+                button.addEventListener('click', () => {
+                    const value = button.innerText;
+
+                    if (value >= '0' && value <= '9') {
+                        currentInput += value;
+                        totalElement.innerText = currentInput;
+                    } else if (value === 'c') {
+                        currentInput = '';
+                        currentOperator = '';
+                        firstOperand = '';
+                        totalElement.innerText = '0';
+                    } else if (value === '=') {
+                        if (currentInput && currentOperator && firstOperand !== '') {
+                            currentInput = evaluate(firstOperand, currentOperator, currentInput);
+                            totalElement.innerText = currentInput;
+                            currentOperator = '';
+                            firstOperand = '';
+                        }
+                    } else {
+                        if (currentInput) {
+                            if (firstOperand === '') {
+                                firstOperand = currentInput;
+                                currentOperator = value;
+                                currentInput = '';
+                            } else {
+                                firstOperand = evaluate(firstOperand, currentOperator, currentInput);
+                                currentOperator = value;
+                                currentInput = '';
+                                totalElement.innerText = firstOperand;
+                            }
+                        }
+                    }
+                });
+            });
+
+            function evaluate(operand1, operator, operand2) {
+                const a = parseFloat(operand1);
+                const b = parseFloat(operand2);
+                switch (operator) {
+                    case '+': return (a + b).toString();
+                    case '-': return (a - b).toString();
+                    case '*': return (a * b).toString();
+                    case '/': return (a / b).toString();
+                    default: return '';
+                }
+            }
+        });
+</script>
+</body>
